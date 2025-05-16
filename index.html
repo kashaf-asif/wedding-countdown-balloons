@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>12 Balloons Wedding Countdown</title>
+<style>
+    body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+
+  /* New background gradient - deeper pinks */
+  background: linear-gradient(135deg, #e06ea6, #d46a91, #be5a80, #a14468);
+}
+
+
+  .container {
+    position: relative;
+    width: 420px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 25px;
+  }
+
+  .balloon {
+    width: 70px;
+    height: 100px;
+    background: radial-gradient(circle at 30% 30%, #ff8a80, #c85a54);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    color: white;
+    font-weight: bold;
+    user-select: none;
+    transition: transform 0.3s ease;
+  }
+  .balloon:nth-child(2) { background: radial-gradient(circle at 30% 30%, #f48fb1, #ba5370); }
+  .balloon:nth-child(3) { background: radial-gradient(circle at 30% 30%, #fdd835, #c6a700); }
+  .balloon:nth-child(4) { background: radial-gradient(circle at 30% 30%, #81d4fa, #4a90e2); }
+  .balloon:nth-child(5) { background: radial-gradient(circle at 30% 30%, #ce93d8, #9c57a6); }
+  .balloon:nth-child(6) { background: radial-gradient(circle at 30% 30%, #aed581, #729f3f); }
+  .balloon:nth-child(7) { background: radial-gradient(circle at 30% 30%, #ffb74d, #c77800); }
+  .balloon:nth-child(8) { background: radial-gradient(circle at 30% 30%, #4db6ac, #237260); }
+  .balloon:nth-child(9) { background: radial-gradient(circle at 30% 30%, #f48fb1, #ba5370); }
+  .balloon:nth-child(10) { background: radial-gradient(circle at 30% 30%, #90caf9, #4a74d0); }
+  .balloon:nth-child(11) { background: radial-gradient(circle at 30% 30%, #a5d6a7, #5b9850); }
+  .balloon:nth-child(12) { background: radial-gradient(circle at 30% 30%, #ffcc80, #c78a00); }
+
+  .balloon::after {
+    content: "";
+    width: 4px;
+    height: 30px;
+    background: #333;
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 1px;
+  }
+
+  .balloon:hover {
+    transform: scale(1.1);
+  }
+
+  .message {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    color: #222;
+    padding: 15px 25px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    max-width: 80vw;
+    text-align: center;
+    z-index: 100;
+  }
+
+  .message.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Confetti pieces */
+  .confetti-piece {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    opacity: 0.85;
+    border-radius: 2px;
+    pointer-events: none;
+    animation: confetti-fall 900ms ease forwards;
+  }
+
+  @keyframes confetti-fall {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--x), var(--y)) rotate(360deg);
+      opacity: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="balloon" data-msg="12 days remaining, keep the joy alive! 🌟">12</div>
+  <div class="balloon" data-msg="Joy in life 🎉😄">11</div>
+  <div class="balloon" data-msg="Love forevermore 💖∞">10</div>
+  <div class="balloon" data-msg="Happiness always with you 😊✨">9</div>
+  <div class="balloon" data-msg="Lovely journey ahead 🚀🌷">8</div>
+  <div class="balloon" data-msg="Peace in your soul ☮️🕊️">7</div>
+  <div class="balloon" data-msg="Hope shines bright 🌞✨">6</div>
+  <div class="balloon" data-msg="Cherish every moment ⏳❤️">5</div>
+  <div class="balloon" data-msg="Dreams come true 🌈💫">4</div>
+  <div class="balloon" data-msg="Heart always happy ❤️😊">3</div>
+  <div class="balloon" data-msg="Smile every day 😀🌸">2</div>
+  <div class="balloon" data-msg="Life full of joy 🌟😊">1</div>
+</div>
+
+<div class="message" id="message"></div>
+
+<script>
+  const balloons = document.querySelectorAll('.balloon');
+  const messageBox = document.getElementById('message');
+  let timeoutId;
+
+  function createConfetti(x, y, container) {
+    const colors = ['#f44336', '#e91e63', '#ffeb3b', '#4caf50', '#2196f3', '#ff9800'];
+    for (let i = 0; i < 12; i++) {
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti-piece');
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.left = `${x}px`;
+      confetti.style.top = `${y}px`;
+      // subtle movement
+      const xMove = (Math.random() - 0.5) * 60 + 'px';
+      const yMove = (Math.random() - 1) * 60 + 'px';
+      confetti.style.setProperty('--x', xMove);
+      confetti.style.setProperty('--y', yMove);
+      container.appendChild(confetti);
+
+      confetti.addEventListener('animationend', () => {
+        confetti.remove();
+      });
+    }
+  }
+
+  balloons.forEach(balloon => {
+    balloon.addEventListener('click', (e) => {
+      clearTimeout(timeoutId);
+      messageBox.textContent = balloon.getAttribute('data-msg');
+      messageBox.classList.add('show');
+      timeoutId = setTimeout(() => {
+        messageBox.classList.remove('show');
+      }, 3000);
+
+      // Confetti only on balloon "12"
+      if (balloon.textContent.trim() === '12') {
+        const rect = balloon.getBoundingClientRect();
+        const confettiX = rect.left + rect.width / 2;
+        const confettiY = rect.top + 10;
+        createConfetti(confettiX, confettiY, document.body);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
